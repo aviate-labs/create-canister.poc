@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "dfx": "0.8.1",
+  "canisters": {
+    "index": {
+      "type": "motoko",
+      "main": "index/main.mo"
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": "vessel sources"
+    }
+  }
+}
