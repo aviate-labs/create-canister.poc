@@ -1,12 +1,14 @@
 import Cycles "mo:base/ExperimentalCycles";
+import Error "mo:base/Error";
 import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 
 import Canister "Canister";
+import Interface "Interface";
 
 import Management "../src/Management"
 
-shared ({caller = owner}) actor class Index() = this {
+shared ({caller = owner}) actor class Index() : async Interface.Interface = this {
     private let managementCanister : Management.Interface = actor("aaaaa-aa");
 
     private let GB1 = 1073741824;
@@ -41,5 +43,16 @@ shared ({caller = owner}) actor class Index() = this {
         let size = await can.getSize();
         canisterMap.put(Principal.fromActor(can), GB2 - size : Nat);
         can;
+    };
+
+    public query func getCycleBalance(p : Principal) : async (query () -> async Nat) {
+        let pt = Principal.toText(p);
+        switch (canisterMap.get(p)) {
+            case (null) throw Error.reject("canister not found: " # pt);
+            case (? _) {
+                let canister : Canister.Canister = actor(pt);
+                canister.getCycleBalance;
+            };
+        };
     };
 };

@@ -21,12 +21,17 @@ check() {
 }
 
 bold "| Starting replica."
-dfx start --background --clean > /dev/null 2>&1
+dfx start --background --clean # > /dev/null 2>&1
 dfx deploy index
 
-bold "| Creating new canister through Motoko."
+bold "| Creating new canister with Motoko."
+index=$(dfx canister id index)
 canister=$(dfx canister call index createCanister | cut -d \" -f2)
 
 check "Checking new canister balance" "$(dfx canister call $canister getCycleBalance)" "(1_000_000_000_000 : nat)"
+
+bold "| Setting up client."
+dfx deploy client --argument "(principal \"$index\")"
+check "Checking canister balance through client" "$(dfx canister call client getCycleBalance "(principal \"$canister\")")" "(1_000_000_000_000 : nat)"
 
 dfx -q stop > /dev/null 2>&1

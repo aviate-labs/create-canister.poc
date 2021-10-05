@@ -2,6 +2,10 @@
   "version": 1,
   "dfx": "0.8.1",
   "canisters": {
+    "client": {
+      "type": "motoko",
+      "main": "index/main.mo"
+    },
     "index": {
       "type": "motoko",
       "main": "index/main.mo"
